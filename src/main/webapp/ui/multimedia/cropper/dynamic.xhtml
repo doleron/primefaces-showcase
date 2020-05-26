@@ -20,38 +20,44 @@
         
         <h:form>
 	
-			<p:growl id="msgs" showDetail="true"/>
-        
+            <p:growl id="msgs" showDetail="true"/>
+
             <h:panelGrid columns="3">
-        
-	        	
-	        	
-            	<h:panelGrid columns="1">
-            	
-            		<p:spinner id="iterationSpinner" value="#{dynamicCropper.numberOfIterations}" min="5" max="50" stepFactor="5"
-		        		valueChangeListener="#{dynamicCropper.updateImage}">
-		        		<p:ajax process="@this" update="cropper" />
-		        	</p:spinner>
-		        	
-            		<h:panelGrid columns="2">
-			        	<p:outputPanel id="cropper">
-				        	<p:imageCropper value="#{dynamicCropper.croppedImage}" id="streamed_cropper" cache="false"
-				        		stream="#{dynamicCropper.image}" 
-				        		initialCoords="50,50,150,100" minSize="50,50" maxSize="350,350"/>
-			        	</p:outputPanel>
-			        	<p:outputPanel id="cropped">
-				            <p:graphicImage rendered="#{not empty dynamicCropper.newImageName}" 
-				            	name="demo/images/crop/#{dynamicCropper.newImageName}" />
-				        </p:outputPanel>
-				    </h:panelGrid>
-	        		
-       				<p:commandButton value="Crop" action="#{dynamicCropper.crop}" 
-       					update="cropped msgs" icon="pi pi-clone"/>
-       				
-	        	</h:panelGrid>
-	        	
-		    </h:panelGrid>
-		    
+
+
+                <h:panelGrid columns="1">
+
+                    <p:spinner id="iterationSpinner"
+                        value="#{dynamicCropper.numberOfIterations}"
+                        min="5" max="50" stepFactor="5"
+                        valueChangeListener="#{dynamicCropper.updateImage}">
+                        <p:ajax process="@this" update="cropper" />
+                    </p:spinner>
+
+                    <h:panelGrid columns="2">
+                        <p:outputPanel id="cropper">
+                            <p:imageCropper
+                                value="#{dynamicCropper.croppedImage}"
+                                id="streamed_cropper" cache="false"
+                                stream="#{dynamicCropper.image}"
+                                initialCoords="50,50,150,100"
+                                minSize="50,50" maxSize="350,350" />
+                        </p:outputPanel>
+                        <p:outputPanel id="cropped">
+                            <p:graphicImage
+                                rendered="#{not empty dynamicCropper.newImageName}"
+                                name="demo/images/crop/#{dynamicCropper.newImageName}" />
+                        </p:outputPanel>
+                    </h:panelGrid>
+
+                    <p:commandButton value="Crop"
+                        action="#{dynamicCropper.crop}"
+                        update="cropped msgs" icon="pi pi-clone" />
+
+                </h:panelGrid>
+
+            </h:panelGrid>
+
         </h:form>
         
     </ui:define>
