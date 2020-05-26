@@ -37,7 +37,7 @@ public class DynamicCropper implements Serializable {
     
     @PostConstruct
     public void init() {
-        this.numberOfIterations = 10;
+        this.numberOfIterations = 5;
         try {
             this.image = mandelbrotSet(width, height, numberOfIterations);
         } catch (IOException e) {
