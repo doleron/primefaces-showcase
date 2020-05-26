@@ -22,43 +22,46 @@
 
 		<h:form id="formId">
 
-			<p:fileUpload id="uploader1" mode="advanced" />
+            <p:fileUpload id="uploader1" mode="advanced" />
 
-			<p:outputPanel id="tooltipsPanel">
+            <p:outputPanel id="tooltipsPanel">
 
-				<p:tooltip id="uploaderChooseFileBeforeUploadToolTip"
-					widgetVar="chooseWV" position="top"
-					for="@(#formId\:uploader1 > .ui-fileupload-buttonbar > .ui-fileupload-choose)"
-					value="Choose button tooltip" />
+                <p:tooltip id="uploaderChooseFileBeforeUploadToolTip"
+                    widgetVar="chooseWV" position="top"
+                    for="@(#formId\:uploader1 > .ui-fileupload-buttonbar > .ui-fileupload-choose)"
+                    value="Choose button tooltip" />
 
-				<p:tooltip id="uploaderUploadButtonToolTip" position="right"
-					for="@(#formId\:uploader1 > .ui-fileupload-buttonbar > .ui-fileupload-upload)"
-					value="Upload button tooltip" showEffect="clip" hideEffect="explode"/>
+                <p:tooltip id="uploaderUploadButtonToolTip"
+                    position="right"
+                    for="@(#formId\:uploader1 > .ui-fileupload-buttonbar > .ui-fileupload-upload)"
+                    value="Upload button tooltip" showEffect="clip"
+                    hideEffect="explode" />
 
-				<p:tooltip id="uploaderCancelButtonToolTip" position="bottom"
-					for="@(#formId\:uploader1 > .ui-fileupload-buttonbar > .ui-fileupload-cancel)"
-					value="Cancel button tooltip" />
+                <p:tooltip id="uploaderCancelButtonToolTip"
+                    position="bottom"
+                    for="@(#formId\:uploader1 > .ui-fileupload-buttonbar > .ui-fileupload-cancel)"
+                    value="Cancel button tooltip" />
 
-			</p:outputPanel>
-			
-			<br/>
+            </p:outputPanel>
 
-			<p:fileUpload id="uploader2" mode="advanced"
-				chooseButtonTitle="Choose button tooltip"
-				uploadButtonTitle="Upload button tooltip"
-				cancelButtonTitle="Cancel button tooltip"
-			/>
-			
-			<br/>
+            <br />
 
-			<p:fileUpload id="uploader3" mode="simple" skinSimple="true" title="my custom title"/>
-			
-			<br/>
-			<br/>
+            <p:fileUpload id="uploader2" mode="advanced"
+                chooseButtonTitle="Choose button tooltip"
+                uploadButtonTitle="Upload button tooltip"
+                cancelButtonTitle="Cancel button tooltip" />
+            <br />
 
-			<p:fileUpload id="uploader4" mode="simple" title="my custom title"/>
+            <p:fileUpload id="uploader3" mode="simple" skinSimple="true"
+                title="my custom title" />
 
-		</h:form>
+            <br />
+            <br />
+
+            <p:fileUpload id="uploader4" mode="simple"
+                title="my custom title" />
+
+        </h:form>
 
 	</ui:define>
 
