@@ -4,7 +4,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:ai="http://primefaces.org/ai"
-                template="/WEB-INF/template.xhtml">
+                template="template.xhtml">
 
     <ui:define name="title">
         SmartCam
@@ -12,6 +12,7 @@
 
     <ui:define name="description">
         SmartCam allows to apply computer vision detection algorithms to camera stream.
+        By default, SmartCam is shipped with <p:link href="https://github.com/tensorflow/tfjs-models/tree/master/facemesh">Tensorflow Facemesh</p:link> face detector algorithm.
     </ui:define>
 
     <ui:param name="documentationLink" value="/components/ai/smartCam" />
@@ -52,7 +53,7 @@
         
                                     canvasContext.beginPath();
                                     canvasContext.fillRect(x, y, 2, 2);
-                                    canvasContext.fillStyle = "yellow";
+                                    canvasContext.fillStyle = "blue";
                                     canvasContext.fill();
                                 }
                             } 
@@ -67,7 +68,7 @@
                 		        	canvasContext.beginPath();
                 		        	canvasContext.rect(faceX, faceY, faceW, faceH);
                 		        	canvasContext.lineWidth = 5;
-                		        	canvasContext.strokeStyle = "orange";
+                		        	canvasContext.strokeStyle = "yellow";
                 		        	canvasContext.stroke();
                 		        }
                             }
@@ -81,26 +82,24 @@
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh"></script>
         
+        <p:panelGrid columns="2">
+            <p:toggleSwitch onchange="toggle()"/>
+            <p:outputPanel id="controlsPanel" style="visibility: hidden">
+                <h:outputText value="Draw Cloud:    " />
+                <p:selectBooleanButton onLabel="Yes" offLabel="No" style="width:60px" onchange="drawCloud = !drawCloud;"/>
+                <h:outputText value="Draw Bounding Box:   " />
+                <p:selectBooleanButton onLabel="Yes" offLabel="No" style="width:60px" onchange="drawBound = !drawBound"/>
+            </p:outputPanel>
+        </p:panelGrid>
+        
         <h:form id="camForm">        
             <ai:smartCam id="mySmartCamera" widgetVar="mySmartCameraWV"
                 autoStart="false"
                 width="640" height="480" renderTimeout="50"
-                doDetection="true"
                 imageHandler="myCameraHandler(video, canvasContext, detections)"
                 style="width: 640px; height: 480px"
             />
         </h:form>
-        
-        <br/>
-        
-        <p:panelGrid columns="2">
-            <p:toggleSwitch onchange="toggle()"/>
-            <p:outputPanel id="controlsPanel" style="visibility: hidden">
-                <h:outputText value="Draw Cloud:    " /><p:selectBooleanButton onLabel="Yes" offLabel="No" style="width:60px" onchange="drawCloud = !drawCloud;"/>
-                <h:outputText value="Draw Bounding Box:   " /><p:selectBooleanButton onLabel="Yes" offLabel="No" style="width:60px" onchange="drawBound = !drawBound"/>
-            </p:outputPanel>
-        </p:panelGrid>
-        
         
     </ui:define>
 

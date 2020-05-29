@@ -1,0 +1,112 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ai="http://primefaces.org/ai"
+                template="template.xhtml">
+
+    <ui:define name="title">
+        SmartCam
+    </ui:define>
+
+    <ui:define name="description">
+        SmartCam allows to apply computer vision detection algorithms to camera stream.
+        You can use different computer vision object detection algorithms. In this example objects are detected using 
+        <p:link href="https://github.com/tensorflow/tfjs-models/tree/master/coco-ssd">Tensorflow COCO-SSD</p:link> image detector.
+    </ui:define>
+
+    <ui:param name="documentationLink" value="/components/ai/smartCam" />
+    <ui:param name="widgetLink" value="smartcam" />
+
+    <ui:define name="implementation">
+    
+        <script type="text/javascript">
+            //<![CDATA[
+            
+            async function loadModel() {
+                return await cocoSsd.load();
+            }
+    
+            async function customPredict(model, input) {
+                return await model.detect(input);
+            }
+
+            var drawBound = false;
+            var playing = false;
+
+            function toggle() {
+                if(playing) {
+                    PF('mySmartCameraWV').stop();
+                    $('#controlsPanel').css('visibility', 'hidden');
+                } else {
+                	PF('mySmartCameraWV').play();
+                    $('#controlsPanel').css('visibility', 'visible');
+                }
+                playing = !playing;
+            }
+
+            function myCameraHandler(video, canvasContext, detections) {
+                if (video && canvasContext) {
+                	canvasContext.drawImage(video, 0, 0, video.width, video.height);
+                    if(detections) {
+                        if (drawBound) { 
+                            const tickness = 5;
+                            const fontSize = 20;
+                	    	detections.forEach(detection => {
+    
+                	    		const boundingBox = detection.bbox;
+                		        if(boundingBox) {
+                		        	const x = boundingBox[0];
+                		        	const y = boundingBox[1];
+                		        	const w = boundingBox[2];
+                		        	const h = boundingBox[3];
+                		        	const clazz = detection.class;
+                		        	
+                		        	canvasContext.beginPath();
+                		        	canvasContext.rect(x, y, w, h);
+                		        	canvasContext.lineWidth = tickness;
+                		        	canvasContext.strokeStyle = "orange";
+                		        	canvasContext.stroke();
+                                    canvasContext.fillStyle = "orange";
+                                    canvasContext.font = fontSize + "px Arial";
+                                    canvasContext.fillRect(x - tickness / 2, y - fontSize - tickness, canvasContext.measureText(clazz).width + tickness, fontSize + tickness);
+                		        	canvasContext.fillStyle = "white";
+                		        	canvasContext.fillText(clazz, x, y - tickness);
+                		        }
+        
+                		    });
+                    	}
+                    }
+                }
+            }
+            //]]>
+        </script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"> </script>
+        
+        <h:form id="camForm">        
+            <ai:smartCam id="mySmartCamera" widgetVar="mySmartCameraWV"
+                autoStart="false"
+                width="640" height="480" renderTimeout="20"
+                imageHandler="myCameraHandler(video, canvasContext, detections)"
+                model="return loadModel()"
+                predict="return customPredict(model, input)"
+                style="width: 640px; height: 480px"
+            />
+        </h:form>
+        
+        <br/>
+        
+        <p:panelGrid columns="2">
+            <p:toggleSwitch onchange="toggle()"/>
+            <p:outputPanel id="controlsPanel" style="visibility: hidden">
+                <h:outputText value="Draw Bounding Box:   " />
+                <p:selectBooleanButton onLabel="Yes" offLabel="No" style="width:60px" onchange="drawBound = !drawBound"/>
+            </p:outputPanel>
+        </p:panelGrid>
+        
+    </ui:define>
+
+</ui:composition>
