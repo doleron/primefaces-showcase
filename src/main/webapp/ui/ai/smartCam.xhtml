@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ai="http://primefaces.org/ai"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">
+        SmartCam
+    </ui:define>
+
+    <ui:define name="description">
+        SmartCam is a component to apply machine learning image detection algorithms to camera stream.
+    </ui:define>
+
+    <ui:param name="documentationLink" value="/components/photocam" />
+    <ui:param name="widgetLink" value="photocam" />
+
+    <ui:define name="implementation">
+    
+        <script type="text/javascript">
+            //<![CDATA[
+            
+            function myCameraHandler(video, canvasContext, detections) {
+            	canvasContext.drawImage(video, 0, 0, video.width, video.height);
+                if(detections) {
+        	    	detections.forEach(detection => {
+        		    	var boundingBox = detection.boundingBox;
+        		        if(boundingBox) {
+        		        	var faceX = boundingBox.topLeft[0][0];
+        		        	var faceY = boundingBox.topLeft[0][1];
+        		        	var faceW = boundingBox.bottomRight[0][0] - faceX;
+        		        	var faceH = boundingBox.bottomRight[0][1] - faceY;
+        		        	
+        		        	canvasContext.beginPath();
+        		        	canvasContext.rect(faceX, faceY, faceW, faceH);
+        		        	canvasContext.lineWidth = 7;
+        		        	canvasContext.strokeStyle = 'red';
+        		        	canvasContext.stroke();
+        		        }
+        		    });
+            	}
+            }
+            //]]>
+        </script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh"></script>
+        
+        <h:form id="camForm">        
+            <ai:smartCam id="mySmartCamera" widgetVar="mySmartCameraWV" imageHandler="myCameraHandler(video, canvasContext, detections)"
+                autoStart="true"
+                width="640" height="480" renderTimeout="100"
+                doDetection="true"/>
+        </h:form>
+        <button onclick="PF('mySmartCameraWV').play()">Play</button>
+        <button onclick="PF('mySmartCameraWV').stop()">Stop</button>
+        
+    </ui:define>
+
+</ui:composition>
