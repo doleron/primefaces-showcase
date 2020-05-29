@@ -11,36 +11,69 @@
     </ui:define>
 
     <ui:define name="description">
-        SmartCam is a component to apply machine learning image detection algorithms to camera stream.
+        SmartCam allows to apply computer vision detection algorithms to camera stream.
     </ui:define>
 
-    <ui:param name="documentationLink" value="/components/photocam" />
-    <ui:param name="widgetLink" value="photocam" />
+    <ui:param name="documentationLink" value="/components/ai/smartCam" />
+    <ui:param name="widgetLink" value="smartcam" />
 
     <ui:define name="implementation">
     
         <script type="text/javascript">
             //<![CDATA[
             
+            var drawCloud = false;
+            var drawBound = false;
+            var playing = false;
+
+            function toggle() {
+                if(playing) {
+                    PF('mySmartCameraWV').stop();
+                    $('#controlsPanel').css('visibility', 'hidden');
+                } else {
+                	PF('mySmartCameraWV').play();
+                    $('#controlsPanel').css('visibility', 'visible');
+                }
+                playing = !playing;
+            }
+
             function myCameraHandler(video, canvasContext, detections) {
-            	canvasContext.drawImage(video, 0, 0, video.width, video.height);
-                if(detections) {
-        	    	detections.forEach(detection => {
-        		    	var boundingBox = detection.boundingBox;
-        		        if(boundingBox) {
-        		        	var faceX = boundingBox.topLeft[0][0];
-        		        	var faceY = boundingBox.topLeft[0][1];
-        		        	var faceW = boundingBox.bottomRight[0][0] - faceX;
-        		        	var faceH = boundingBox.bottomRight[0][1] - faceY;
-        		        	
-        		        	canvasContext.beginPath();
-        		        	canvasContext.rect(faceX, faceY, faceW, faceH);
-        		        	canvasContext.lineWidth = 7;
-        		        	canvasContext.strokeStyle = 'red';
-        		        	canvasContext.stroke();
-        		        }
-        		    });
-            	}
+                if (video && canvasContext) {
+                	canvasContext.drawImage(video, 0, 0, video.width, video.height);
+                    if(detections) {
+            	    	detections.forEach(detection => {
+    
+                            if(drawCloud) {
+                            	const points = detection.scaledMesh;
+                            	
+                            	for (let i = 0; i < points.length; i++) {
+                                    const x = points[i][0];
+                                    const y = points[i][1];
+        
+                                    canvasContext.beginPath();
+                                    canvasContext.fillRect(x, y, 2, 2);
+                                    canvasContext.fillStyle = "yellow";
+                                    canvasContext.fill();
+                                }
+                            } 
+                            if (drawBound) {
+                		    	var boundingBox = detection.boundingBox;
+                		        if(boundingBox) {
+                		        	var faceX = boundingBox.topLeft[0][0];
+                		        	var faceY = boundingBox.topLeft[0][1];
+                		        	var faceW = boundingBox.bottomRight[0][0] - faceX;
+                		        	var faceH = boundingBox.bottomRight[0][1] - faceY;
+                		        	
+                		        	canvasContext.beginPath();
+                		        	canvasContext.rect(faceX, faceY, faceW, faceH);
+                		        	canvasContext.lineWidth = 5;
+                		        	canvasContext.strokeStyle = "orange";
+                		        	canvasContext.stroke();
+                		        }
+                            }
+            		    });
+                	}
+                }
             }
             //]]>
         </script>
@@ -49,13 +82,25 @@
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/facemesh"></script>
         
         <h:form id="camForm">        
-            <ai:smartCam id="mySmartCamera" widgetVar="mySmartCameraWV" imageHandler="myCameraHandler(video, canvasContext, detections)"
-                autoStart="true"
-                width="640" height="480" renderTimeout="100"
-                doDetection="true"/>
+            <ai:smartCam id="mySmartCamera" widgetVar="mySmartCameraWV"
+                autoStart="false"
+                width="640" height="480" renderTimeout="50"
+                doDetection="true"
+                imageHandler="myCameraHandler(video, canvasContext, detections)"
+                style="width: 640px; height: 480px"
+            />
         </h:form>
-        <button onclick="PF('mySmartCameraWV').play()">Play</button>
-        <button onclick="PF('mySmartCameraWV').stop()">Stop</button>
+        
+        <br/>
+        
+        <p:panelGrid columns="2">
+            <p:toggleSwitch onchange="toggle()"/>
+            <p:outputPanel id="controlsPanel" style="visibility: hidden">
+                <h:outputText value="Draw Cloud:    " /><p:selectBooleanButton onLabel="Yes" offLabel="No" style="width:60px" onchange="drawCloud = !drawCloud;"/>
+                <h:outputText value="Draw Bounding Box:   " /><p:selectBooleanButton onLabel="Yes" offLabel="No" style="width:60px" onchange="drawBound = !drawBound"/>
+            </p:outputPanel>
+        </p:panelGrid>
+        
         
     </ui:define>
 
