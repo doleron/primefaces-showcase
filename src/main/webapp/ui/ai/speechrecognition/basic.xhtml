@@ -1,0 +1,145 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ai="http://primefaces.org/ai"
+                template="template.xhtml">
+
+    <ui:define name="title">
+        SpeechRecognition
+    </ui:define>
+    
+    <ui:define name="head">
+        <style type="text/css">
+        
+            .microphone,
+            .recording {
+                font-size: 60px !important;
+                cursor: pointer;
+            }
+            .microphone {
+                color: rgb(35, 60, 15); 
+            }
+            .recording {
+                color: rgb(246, 20, 35); 
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="description">
+        SpeechRecognition is a component able to perform automatic transcription of speech into text.
+        This component uses the borwser built-in Web Speech API implementation.
+    </ui:define>
+
+    <ui:param name="documentationLink" value="/components/ai/speechrecognition" />
+    <ui:param name="widgetLink" value="speechrecognition" />
+    
+    <ui:define name="implementation">
+    
+        <script type="text/javascript">
+            //<![CDATA[
+
+                function onSpeech(speech) {
+                    if(speech) {
+                        if(speech[0][0].transcript) {
+                            document.querySelector("#output").innerHTML = speech[0][0].transcript;
+                        } else {
+                            console.error("onSpeech: speech format error", speech);
+                        }
+                    }
+                }
+
+                function onError(error) {
+                    document.querySelector("#output").innerHTML = "Sorry, I got an error: " + error;
+                }
+                
+            //]]>
+        </script>
+        
+        <ai:speechRecognition id="mySpeechRecognition" widgetVar="mySpeechRecognitionWV"
+            speechHandler="onSpeech(speech)" 
+            speechErrorHandler="onError(error)"
+            language="en-US"/>
+            
+        <span class="microphone" id="microphone">
+            <i class="fa fa-microphone"></i>
+        </span>
+        
+        <select id="langs" onchange="updateVariations(this.value)"/>
+        <select id="langVariations" onchange="PF('mySpeechRecognitionWV').setLanguage(this.value)"/>
+        
+        <span id="output" style="margin-left: 20px"/>
+        
+        <script type="text/javascript">
+            //<![CDATA[
+
+                function updateVariations(langIndex) {
+                	const langVariations = document.querySelector("#langVariations");
+                	var i, size = langVariations.options.length - 1;
+            	    for(i = size; i >= 0; i--) {
+            	    	langVariations.remove(i);
+            	    }
+
+            	    var variations = srWidget.langVariations(langIndex);
+            	    variations.forEach(variation => {
+                        var option = document.createElement("option");
+                        
+                        option.value = variation[0];
+                        if(variation.length > 1) {
+                            option.text = variation[1];
+                        } else {
+                            option.text = variation[0];
+                        }
+                        langVariations.add(option);
+                    });
+                    if(variations) {
+                    	PF('mySpeechRecognitionWV').setLanguage(variations[0][0]);
+                    }
+                }
+
+                const srWidget = PF('mySpeechRecognitionWV');
+                const languageAvailables = srWidget.languages();
+
+                const langSelect = document.querySelector("#langs");
+                var i;
+                var size = languageAvailables.length;
+                for(i = 0; i < size; i++) {
+                	var option = document.createElement("option");
+                	option.text = languageAvailables[i];
+                    option.value = i;
+                    langSelect.add(option);
+                }
+                const defaultLang = 6;
+                langSelect.value = defaultLang;
+                updateVariations(defaultLang);
+                document.querySelector("#langVariations").value = 'en-US';
+
+                var playing = false;
+                var mic = document.querySelector("#microphone");
+                function toggleSR() {
+                    var recognition = PF('mySpeechRecognitionWV');
+                    if (recognition) {
+                        if(playing) {
+                        	mic.className = "microphone";
+                            recognition.stop();
+                        } else {
+                        	document.querySelector("#output").innerHTML = "";
+                        	mic.className = "recording";
+                            recognition.start();
+                        }
+                        playing = !playing;
+                    } else {
+                        console.log("mySpeechRecognitionWV not found");
+                    }
+                }
+
+                mic.addEventListener("click", toggleSR);
+                
+            //]]>
+
+        </script>
+        
+    </ui:define>
+
+</ui:composition>

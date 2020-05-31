@@ -62,16 +62,17 @@
                 		        	const w = boundingBox[2];
                 		        	const h = boundingBox[3];
                 		        	const clazz = detection.class;
+                                    const color = colorForClass(clazz);
                 		        	
                 		        	canvasContext.beginPath();
                 		        	canvasContext.rect(x, y, w, h);
                 		        	canvasContext.lineWidth = tickness;
-                		        	canvasContext.strokeStyle = "orange";
+                		        	canvasContext.strokeStyle = color;
                 		        	canvasContext.stroke();
-                                    canvasContext.fillStyle = "orange";
+                                    canvasContext.fillStyle = color;
                                     canvasContext.font = fontSize + "px Arial";
                                     canvasContext.fillRect(x - tickness / 2, y - fontSize - tickness, canvasContext.measureText(clazz).width + tickness, fontSize + tickness);
-                		        	canvasContext.fillStyle = "white";
+                		        	canvasContext.fillStyle = "black";
                 		        	canvasContext.fillText(clazz, x, y - tickness);
                 		        }
         
@@ -80,11 +81,20 @@
                     }
                 }
             }
+
             //]]>
         </script>
         
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
         <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"> </script>
+        
+        <p:panelGrid columns="2">
+            <p:toggleSwitch onchange="toggle()"/>
+            <p:outputPanel id="controlsPanel" style="visibility: hidden">
+                <h:outputText value="Draw Bounding Box:   " />
+                <p:selectBooleanButton onLabel="Yes" offLabel="No" style="width:60px" onchange="drawBound = !drawBound"/>
+            </p:outputPanel>
+        </p:panelGrid>
         
         <h:form id="camForm">        
             <ai:smartCam id="mySmartCamera" widgetVar="mySmartCameraWV"
@@ -96,16 +106,102 @@
                 style="width: 640px; height: 480px"
             />
         </h:form>
-        
-        <br/>
-        
-        <p:panelGrid columns="2">
-            <p:toggleSwitch onchange="toggle()"/>
-            <p:outputPanel id="controlsPanel" style="visibility: hidden">
-                <h:outputText value="Draw Bounding Box:   " />
-                <p:selectBooleanButton onLabel="Yes" offLabel="No" style="width:60px" onchange="drawBound = !drawBound"/>
-            </p:outputPanel>
-        </p:panelGrid>
+    
+        <script type="text/javascript">
+            //<![CDATA[
+            
+            function colorForClass(clazz) {
+                var result = classColorMap[clazz];
+                if (!result) {
+                	result = "#FFFFFF";
+                }
+                return result;
+            }
+
+			var classColorMap = new Map();
+            classColorMap['tv'] = '#32CD32';
+            classColorMap['bicycle'] = '#000000';
+            classColorMap['car'] = '#B0C4DE';
+            classColorMap['motorcycle'] = '#3CB371';
+            classColorMap['airplane'] = '#8B0000';
+            classColorMap['bus'] = '#A9A9A9';
+            classColorMap['train'] = '#BA55D3';
+            classColorMap['truck'] = '#DAA520';
+            classColorMap['boat'] = '#FFFACD';
+            classColorMap['traffic light'] = '#DA70D6';
+            classColorMap['fire hydrant'] = '#00BFFF';
+            classColorMap['stop sign'] = '#EE82EE';
+            classColorMap['parking meter'] = '#F5DEB3';
+            classColorMap['bench'] = '#808000';
+            classColorMap['bird'] = '#FFE4C4';
+            classColorMap['cat'] = '#FFA07A';
+            classColorMap['dog'] = '#FFDAB9';
+            classColorMap['horse'] = '#696969';
+            classColorMap['sheep'] = '#0000FF';
+            classColorMap['cow'] = '#00008B';
+            classColorMap['elephant'] = '#D2691E';
+            classColorMap['bear'] = '#E0FFFF';
+            classColorMap['zebra'] = '#FFDEAD';
+            classColorMap['giraffe'] = '#008B8B';
+            classColorMap['backpack'] = '#FF69B4';
+            classColorMap['umbrella'] = '#EEE8AA';
+            classColorMap['handbag'] = '#6B8E23';
+            classColorMap['tie'] = '#7B68EE';
+            classColorMap['suitcase'] = '#CD853F';
+            classColorMap['frisbee'] = '#A52A2A';
+            classColorMap['skis'] = '#FAEBD7';
+            classColorMap['snowboard'] = '#9400D3';
+            classColorMap['sports ball'] = '#778899';
+            classColorMap['kite'] = '#E9967A';
+            classColorMap['baseball bat'] = '#FFFFE0';
+            classColorMap['baseball glove'] = '#7CFC00';
+            classColorMap['skateboard'] = '#ADFF2F';
+            classColorMap['surfboard'] = '#20B2AA';
+            classColorMap['tennis racket'] = '#F0FFF0';
+            classColorMap['bottle'] = '#DB7093';
+            classColorMap['wine glass'] = '#2E8B57';
+            classColorMap['cup'] = '#9932CC';
+            classColorMap['fork'] = '#008000';
+            classColorMap['knife'] = '#483D8B';
+            classColorMap['spoon'] = '#6A5ACD';
+            classColorMap['bowl'] = '#FFF5EE';
+            classColorMap['banana'] = '#F08080';
+            classColorMap['apple'] = '#FFFAF0';
+            classColorMap['sandwich'] = '#FFEFD5';
+            classColorMap['orange'] = '#B8860B';
+            classColorMap['broccoli'] = '#000080';
+            classColorMap['carrot'] = '#F4A460';
+            classColorMap['hot dog'] = '#DCDCDC';
+            classColorMap['pizza'] = '#BC8F8F';
+            classColorMap['donut'] = '#4682B4';
+            classColorMap['cake'] = '#FF00FF';
+            classColorMap['chair'] = '#F5F5DC';
+            classColorMap['couch'] = '#8B4513';
+            classColorMap['potted plant'] = '#FFFFFF';
+            classColorMap['bed'] = '#FFA500';
+            classColorMap['dining table'] = '#ADD8E6';
+            classColorMap['toilet'] = '#BDB76B';
+            classColorMap['laptop'] = '#AFEEEE';
+            classColorMap['person'] = '#FFD700';
+            classColorMap['mouse'] = '#FAF0E6';
+            classColorMap['remote'] = '#9ACD32';
+            classColorMap['keyboard'] = '#FAFAD2';
+            classColorMap['cell phone'] = '#1E90FF';
+            classColorMap['microwave'] = '#808080';
+            classColorMap['oven'] = '#0000CD';
+            classColorMap['toaster'] = '#00FFFF';
+            classColorMap['sink'] = '#00FA9A';
+            classColorMap['refrigerator'] = '#CD5C5C';
+            classColorMap['book'] = '#00CED1';
+            classColorMap['clock'] = '#5F9EA0';
+            classColorMap['vase'] = '#FFE4B5';
+            classColorMap['scissors'] = '#FFFFF0';
+            classColorMap['teddy bear'] = '#F8F8FF';
+            classColorMap['hair drier'] = '#87CEFA';
+            classColorMap['toothbrush'] = '#DC143C';
+
+            //]]>
+        </script>
         
     </ui:define>
 

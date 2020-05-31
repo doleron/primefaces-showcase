@@ -1,0 +1,71 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:ai="http://primefaces.org/ai"
+                template="template.xhtml">
+
+    <ui:define name="title">
+        Speaker
+    </ui:define>
+
+    <ui:define name="description">
+        Speaker is a client-side component to perform text-to-speech.
+    </ui:define>
+
+    <ui:param name="documentationLink" value="/components/ai/speaker" />
+    <ui:param name="widgetLink" value="speaker" />
+    
+    <ui:define name="implementation">
+    
+        <ai:speaker id="mySpeaker" widgetVar="mySpeakerWV"
+            voice="en-US"/>
+            
+        <input type="text" id="myText"/>
+        <select id="voiceSelector"/>
+    
+        <button id="play" type="button">Play</button>
+    
+        <script type="text/javascript">
+            //<![CDATA[
+            
+                var voices;
+            
+                async function speak() {
+                	var widget = PF('mySpeakerWV');
+                	var voices = await widget.getVoices();
+                    var voiceSelector = document.querySelector("#voiceSelector");
+                    var voice = widget.getVoice(voices, voiceSelector.value);
+                    var inputText = document.querySelector("#myText");
+                    var text = document.getElementById("myText").value;
+                    widget.speak(text, voice);
+                }
+
+                async function fillVoiceSelector() {
+                    var widget = PF('mySpeakerWV');
+                    voices = await widget.getVoices();
+                    var voiceSelector = document.querySelector("#voiceSelector");
+                    for(i = 0; i < voices.length ; i++) {
+                        var optionVoice = voices[i];
+                        var option = document.createElement('option');
+                        option.text = optionVoice.name + ' (' + optionVoice.lang + ')';
+                        option.value = optionVoice.name;
+                        if(optionVoice.name == widget.cfg.voice || optionVoice.lang == widget.cfg.voice) {
+                        	option.selected = 'selected';
+                        }
+                        voiceSelector.appendChild(option);
+                    }
+                }
+
+                fillVoiceSelector();
+
+                document.querySelector("#play").addEventListener("click", speak);
+                document.querySelector("#myText").focus();
+                
+            //]]>
+        </script>
+        
+    </ui:define>
+
+</ui:composition>
