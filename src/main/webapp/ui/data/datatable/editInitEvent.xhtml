@@ -1,0 +1,124 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="./template.xhtml">
+    <ui:define name="head">
+        <style type="text/css">
+            .ui-row-editor .ui-row-editor-pencil {
+                margin-left:8px;
+            }
+        </style>
+    </ui:define>
+    
+    <ui:define name="title">
+        DataTable - <span class="subitem">editInitEvent</span>
+    </ui:define>
+
+    <ui:define name="description">
+        editInitEvent defines a client side event to open cell on editable table.
+    </ui:define>
+
+    <ui:param name="documentationLink" value="/components/datatable" />
+    <ui:param name="widgetLink" value="datatable" />
+
+    <ui:define name="implementation">
+
+         <h:form id="form">
+            <p:growl id="msgs" showDetail="true"/>
+
+            <p:dataTable id="cars1" var="car" value="#{dtEditView.cars1}" editable="true" editMode="cell" widgetVar="cellCars1" editInitEvent="mouseover">
+                <f:facet name="header">
+                    Cell Editing On Mouse Over Event (mouseover)
+                </f:facet>
+
+                <p:ajax event="cellEdit" listener="#{dtEditView.onCellEdit}" update=":form:msgs" />
+
+                <p:column headerText="Id">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{car.id}" /></f:facet>
+                        <f:facet name="input"><p:inputText id="modelInput" value="#{car.id}" style="width:100%"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Year">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{car.year}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{car.year}" style="width:100%" label="Year"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Brand">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{car.brand}" /></f:facet>
+                        <f:facet name="input">
+                            <h:selectOneMenu value="#{car.brand}" style="width:100%">
+                                <f:selectItems value="#{dtEditView.brands}" var="man" itemLabel="#{man}" itemValue="#{man}" />
+                            </h:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Color">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{car.color}" /></f:facet>
+                        <f:facet name="input">
+                            <h:selectOneMenu value="#{car.color}" style="width:100%">
+                                <f:selectItems value="#{dtEditView.colors}" var="color" itemLabel="#{color}" itemValue="#{color}" />
+                            </h:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+            </p:dataTable>
+
+            <p:dataTable id="cars2" var="car" value="#{dtEditView.cars2}" editable="true" editMode="cell" widgetVar="cellCars2" editInitEvent="dblclick">
+                <f:facet name="header">
+                    Cell Editing with Double Click Event (dblclick)
+                </f:facet>
+
+                <p:ajax event="cellEdit" listener="#{dtEditView.onCellEdit}" update=":form:msgs" />
+
+                <p:column headerText="Id">
+                       <p:cellEditor>
+                           <f:facet name="output"><h:outputText value="#{car.id}" /></f:facet>
+                           <f:facet name="input"><p:inputText id="modelInput" value="#{car.id}" style="width:96%"/></f:facet>
+                       </p:cellEditor>
+                   </p:column>
+
+                   <p:column headerText="Year">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{car.year}" /></f:facet>
+                        <f:facet name="input"><p:inputText value="#{car.year}" style="width:96%" label="Year"/></f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Brand">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{car.brand}" /></f:facet>
+                        <f:facet name="input">
+                            <h:selectOneMenu value="#{car.brand}" style="width:100%">
+                                <f:selectItems value="#{dtEditView.brands}" var="man" itemLabel="#{man}" itemValue="#{man}" />
+                            </h:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+
+                <p:column headerText="Color">
+                    <p:cellEditor>
+                        <f:facet name="output"><h:outputText value="#{car.color}" /></f:facet>
+                        <f:facet name="input">
+                            <h:selectOneMenu value="#{car.color}" style="width:100%">
+                                <f:selectItems value="#{dtEditView.colors}" var="color" itemLabel="#{color}" itemValue="#{color}" />
+                            </h:selectOneMenu>
+                        </f:facet>
+                    </p:cellEditor>
+                </p:column>
+            </p:dataTable>
+            
+         </h:form>
+        
+    </ui:define>
+
+</ui:composition>
