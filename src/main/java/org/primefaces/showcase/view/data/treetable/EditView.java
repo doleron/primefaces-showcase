@@ -36,6 +36,8 @@ public class EditView implements Serializable{
     
     private TreeNode root2;
     
+    private TreeNode root3;
+    
     @Inject
     private DocumentService service;
     
@@ -43,6 +45,7 @@ public class EditView implements Serializable{
     public void init() {
         root = service.createDocuments();
         root2 = service.createDocuments();
+        root3 = service.createDocuments();
     }
 
     public TreeNode getRoot() {
@@ -51,6 +54,10 @@ public class EditView implements Serializable{
 
     public TreeNode getRoot2() {
         return root2;
+    }
+    
+    public TreeNode getRoot3() {
+        return root3;
     }
     
     public void setService(DocumentService service) {
