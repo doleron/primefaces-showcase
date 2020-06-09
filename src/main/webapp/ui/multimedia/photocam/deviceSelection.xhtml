@@ -48,21 +48,24 @@
                     cam.reload();
                 }
             
-                window.setTimeout(function() {
+                function populateDeviceMenu() {
                     var photoCam = PF('pc');
-                    var devices = photoCam.devices;
-                    if (devices) {
-                        var deviceSelector = document.querySelector("select");
-
-                        for(i = 0; i < devices.length; ++i) {
-                            var device = devices[i];
-                            var option = document.createElement("option");
-                            option.text = device.label;
-                            option.value = device.deviceId;
-                            deviceSelector.appendChild(option);
-                        }
+                    var deviceSelector = document.querySelector("select");
+                    var availableDevices = photoCam.getAvailableDevices();
+                    if (availableDevices) {
+                        availableDevices.then(devices => devices.forEach(device => {
+                                    var option = document.createElement("option");
+                                    option.text = device.label;
+                                    option.value = device.deviceId;
+                                    deviceSelector.appendChild(option);
+                                })
+                            );
+                    } else {
+                        console.log("no devices available");
                     }
-                }, 100);
+                }
+                
+                populateDeviceMenu();
 
             //]]>
 
